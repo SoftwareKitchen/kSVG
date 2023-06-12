@@ -85,11 +85,3 @@ class SVGImage(file: File) {
         return Pair({it * facX}, {it * facY})
     }
 }
-
-fun main(){
-    val snake = File("magiaaron-Cartoon-Flower.svg")
-    val svg = SVGImage(snake)
-    val img = BufferedImage(600,800,BufferedImage.TYPE_INT_ARGB)
-    svg.draw(img)
-    ImageIO.write(img, "png", File("foo.png"))
-}

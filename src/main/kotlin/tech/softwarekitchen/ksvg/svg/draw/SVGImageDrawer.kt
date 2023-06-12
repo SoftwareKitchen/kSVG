@@ -91,6 +91,7 @@ fun SVGGroup.draw(size: Vector2i, g: Graphics2D, scaler: Scaler2D, coordinateMap
             it is SVGGroup -> it.draw(size, g, scaler, coordinateMapper, effectiveStyles)
             it is SVGPath -> it.draw(size, g,coordinateMapper, scaler, effectiveStyles)
             it is SVGCircle -> it.draw(g, scaler, coordinateMapper, effectiveStyles)
+            it is SVGRect -> it.draw(g, scaler, coordinateMapper, effectiveStyles)
             else -> throw Exception()
         }
     }

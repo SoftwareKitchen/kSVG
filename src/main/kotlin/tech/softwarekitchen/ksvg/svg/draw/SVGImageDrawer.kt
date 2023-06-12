@@ -5,6 +5,7 @@ import tech.softwarekitchen.ksvg.svg.model.SVGCircle
 import tech.softwarekitchen.ksvg.svg.model.SVGGroup
 import tech.softwarekitchen.ksvg.svg.SVGImage
 import tech.softwarekitchen.ksvg.svg.model.SVGPath
+import tech.softwarekitchen.ksvg.svg.model.SVGRect
 import tech.softwarekitchen.ksvg.svg.model.css.SVGStyle
 import tech.softwarekitchen.ksvg.svg.model.css.SVGStyleType
 import tech.softwarekitchen.ksvg.svg.model.css.mergeStyles
@@ -39,6 +40,22 @@ fun Graphics2D.drawWithSVGStyle(styles: List<SVGStyle>, fillOp: (Graphics2D) -> 
 
 fun SVGPath.draw(size: Vector2i, g: Graphics2D, coordinateMapper: CoordinateMapper, scaler: Scaler2D, parentStyles: List<SVGStyle>){
     SVGPathDrawer().draw(this, size, g, coordinateMapper, scaler, parentStyles)
+}
+
+fun SVGRect.draw(g: Graphics2D, scaler: Scaler2D, coordinateMapper: CoordinateMapper, parentStyles: List<SVGStyle>){
+    val base = coordinateMapper(topLeft.first, topLeft.second)
+    val size = Pair(scaler.first(size.first), scaler.second(size.second))
+    val effectiveStyles = mergeStyles(parentStyles, styles)
+    g.drawWithSVGStyle(
+        effectiveStyles,
+        {
+            it.fillRect(base.first.roundToInt(), base.second.roundToInt(), size.first.roundToInt(), size.second.roundToInt())
+        },
+        {
+            it.drawRect(base.first.roundToInt(), base.second.roundToInt(), size.first.roundToInt(), size.second.roundToInt())
+        },
+        scaler
+    )
 }
 
 fun SVGCircle.draw(g: Graphics2D, scaler: Scaler2D, coordinateMapper: CoordinateMapper, parentStyles: List<SVGStyle>){
@@ -91,6 +108,7 @@ fun SVGImage.draw(target: BufferedImage){
             it is SVGGroup -> it.draw(size, g, scaler, coordinateMapper, styles)
             it is SVGPath -> it.draw(size, g, coordinateMapper, scaler, styles)
             it is SVGCircle -> it.draw(g, scaler, coordinateMapper, styles)
+            it is SVGRect -> it.draw(g, scaler, coordinateMapper, styles)
             else -> throw Exception()
         }
     }

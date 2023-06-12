@@ -5,7 +5,8 @@ import java.awt.Color
 private val regex = "^#[\\dabcdef]{6}$".toRegex()
 private val regexShort = "^#[\\dabcdef]{3}$".toRegex()
 private val regexRgb = "^rgb\\s*\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)$".toRegex()
-fun parseColor(raw: String): Color {
+fun parseColor(_raw: String): Color {
+    val raw = _raw.lowercase()
     if(regexShort.matches(raw)){
         val r = raw.substring(1,2).toInt(16) * 17
         val g = raw.substring(2,3).toInt(16) * 17

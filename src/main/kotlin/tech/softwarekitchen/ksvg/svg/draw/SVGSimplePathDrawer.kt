@@ -71,7 +71,8 @@ class SVGSimplePathDrawer: SVGPartialDrawer<SVGPath> {
 
 
                 SVGOperationType.RelativeMove -> {
-                    val (mx, my) = coordinateMapper((it as SVGRelativeMoveOperation).target.first, it.target.second)
+                    val mx = scaler.first((it as SVGRelativeMoveOperation).target.first)
+                    val my = scaler.second(it.target.second)
                     if(path == null){
                         path = GeneralPath()
                     }
@@ -85,7 +86,8 @@ class SVGSimplePathDrawer: SVGPartialDrawer<SVGPath> {
                 }
 
                 SVGOperationType.RelativeLine -> {
-                    val (mx, my) = coordinateMapper((it as SVGRelativeLineOperation).target.first, it.target.second)
+                    val mx = scaler.first((it as SVGRelativeLineOperation).target.first)
+                    val my = scaler.second(it.target.second)
                     val last = path!!.currentPoint
                     path?.lineTo(mx + last.x, my + last.y)
                 }
@@ -160,7 +162,8 @@ class SVGSimplePathDrawer: SVGPartialDrawer<SVGPath> {
                     path!!.lineTo(tgt.x, tgt.y)
                 }      //FIXME, duplication..
                 SVGOperationType.RelativeArc -> {
-                    val (mx, my) = coordinateMapper((it as SVGRelativeArcOperation).target.first, it.target.second)
+                    val mx = scaler.first((it as SVGRelativeArcOperation).target.first)
+                    val my = scaler.second(it.target.second)
                     val radScaledX = scaler.first(it.rad.first)
                     val radScaledY = scaler.second(it.rad.second)
 
@@ -228,7 +231,7 @@ class SVGSimplePathDrawer: SVGPartialDrawer<SVGPath> {
 
                 SVGOperationType.RelativeHorizontalLine -> {
                     val prev = path!!.currentPoint
-                    val (tgtX, _) = coordinateMapper((it as SVGRelativeHorizontalLine).dx, 0.0)
+                    val tgtX = scaler.first((it as SVGRelativeHorizontalLine).dx)
                     path!!.lineTo(prev.x + tgtX, prev.y)
                 }
 
@@ -240,16 +243,16 @@ class SVGSimplePathDrawer: SVGPartialDrawer<SVGPath> {
 
                 SVGOperationType.RelativeVerticalLine -> {
                     val prev = path!!.currentPoint
-                    val (_, tgtY) = coordinateMapper(0.0, (it as SVGRelativeVerticalLine).dy)
+                    val tgtY = scaler.second((it as SVGRelativeVerticalLine).dy)
                     path!!.lineTo(prev.x, tgtY + prev.y)
                 }
 
                 SVGOperationType.RelativeCubicBezier -> {
                     val prev = path!!.currentPoint
                     val cbDesc = it as SVGRelativeCubicBezierOperation
-                    val b1 = coordinateMapper(cbDesc.b1.first, cbDesc.b1.second)
-                    val b2 = coordinateMapper(cbDesc.b2.first, cbDesc.b2.second)
-                    val end = coordinateMapper(cbDesc.end.first, cbDesc.end.second)
+                    val b1 = Pair(scaler.first(cbDesc.b1.first), scaler.second(cbDesc.b1.second))
+                    val b2 = Pair(scaler.first(cbDesc.b2.first), scaler.second(cbDesc.b2.second))
+                    val end = Pair(scaler.first(cbDesc.end.first), scaler.second(cbDesc.end.second))
                     path!!.curveTo(
                         b1.first + prev.x, b1.second + prev.y,
                         b2.first + prev.x, b2.second + prev.y,
@@ -292,8 +295,8 @@ class SVGSimplePathDrawer: SVGPartialDrawer<SVGPath> {
                     }
 
                     val cbDesc = it as SVGRelativeSmoothCubicBezierOperation
-                    val b2 = coordinateMapper(cbDesc.b2.first, cbDesc.b2.second)
-                    val end = coordinateMapper(cbDesc.end.first, cbDesc.end.second)
+                    val b2 = Pair(scaler.first(cbDesc.b2.first), scaler.second(cbDesc.b2.second))
+                    val end = Pair(scaler.first(cbDesc.end.first), scaler.second(cbDesc.end.second))
 
                     path!!.curveTo(
                         b1.x, b1.y,

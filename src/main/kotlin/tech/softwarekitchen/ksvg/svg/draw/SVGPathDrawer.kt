@@ -25,6 +25,7 @@ class SVGPathDrawer: SVGPartialDrawer<SVGPath> {
 
         val hasEvenOdd = styles.firstOrNull{it.type == SVGStyleType.FillRule}?.let{it.value == "evenodd"} ?: false
 
+
         val isComplex = it.operations.any{it.type == SVGOperationType.ClosePath} && it.operations.indexOfFirst{it.type == SVGOperationType.ClosePath} < it.operations.size - 1
 
         if(hasFill && hasEvenOdd && isComplex){

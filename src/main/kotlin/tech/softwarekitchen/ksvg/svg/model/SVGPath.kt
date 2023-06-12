@@ -49,59 +49,51 @@ class SVGPath(
                 c.toInt()
             }
 
+            var letter = '?'
             while(rest != ""){
-                if(rest[0].isLetter()){
-                    val letter = rest[0]
+                if(rest[0].isLetter()) {
+                    letter = rest[0]
                     rest = rest.substring(1, rest.length).trim()
-
-                    val op = when(letter){
-                        'C' -> SVGCubicBezierOperation(readCooPair(), readCooPair(), readCooPair())
-                        'c' -> SVGRelativeCubicBezierOperation(readCooPair(), readCooPair(), readCooPair())
-                        'M' -> SVGMoveOperation(readCooPair())
-                        'm' -> SVGRelativeMoveOperation(readCooPair())
-                        'A' -> {
-                            SVGArcOperation(readCooPair(),splitOffNumber(), readFlag(), readFlag(),readCooPair())
-                        }
-                        'a' -> {
-                            SVGRelativeArcOperation(readCooPair(),splitOffNumber(), readFlag(), readFlag(),readCooPair())
-                        }
-                        'L' -> {
-                            SVGLineOperation(readCooPair())
-                        }
-                        'l' -> {
-                            SVGRelativeLineOperation(readCooPair())
-                        }
-                        'H' -> {
-                            SVGHorizontalLine(splitOffNumber())
-                        }
-                        'h' -> {
-                            SVGRelativeHorizontalLine(splitOffNumber())
-                        }
-                        'V' -> {
-                            SVGVerticalLine(splitOffNumber())
-                        }
-                        'v' -> {
-                            SVGRelativeVerticalLine(splitOffNumber())
-                        }
-                        's' -> {
-                            SVGRelativeSmoothCubicBezierOperation(readCooPair(), readCooPair())
-                        }
-                        'Z', 'z' -> {
-                            SVGClosePath()
-                        }
-                        else -> throw Exception()
-                    }
-                    ops.add(op)
-                }else{
-                    val lastType = ops.last().type
-                    when{
-                        lastType == SVGOperationType.Line -> ops.add(SVGLineOperation(readCooPair()))
-                        lastType == SVGOperationType.RelativeLine -> ops.add(SVGRelativeLineOperation(readCooPair()))
-                        lastType == SVGOperationType.RelativeCubicBezier -> ops.add(SVGRelativeCubicBezierOperation(readCooPair(), readCooPair(), readCooPair()))
-                        lastType == SVGOperationType.CubicBezier -> ops.add(SVGCubicBezierOperation(readCooPair(), readCooPair(), readCooPair()))
-                        else -> throw Exception()
-                    }
                 }
+
+                val op = when(letter){
+                    'C' -> SVGCubicBezierOperation(readCooPair(), readCooPair(), readCooPair())
+                    'c' -> SVGRelativeCubicBezierOperation(readCooPair(), readCooPair(), readCooPair())
+                    'M' -> SVGMoveOperation(readCooPair())
+                    'm' -> SVGRelativeMoveOperation(readCooPair())
+                    'A' -> {
+                        SVGArcOperation(readCooPair(),splitOffNumber(), readFlag(), readFlag(),readCooPair())
+                    }
+                    'a' -> {
+                        SVGRelativeArcOperation(readCooPair(),splitOffNumber(), readFlag(), readFlag(),readCooPair())
+                    }
+                    'L' -> {
+                        SVGLineOperation(readCooPair())
+                    }
+                    'l' -> {
+                        SVGRelativeLineOperation(readCooPair())
+                    }
+                    'H' -> {
+                        SVGHorizontalLine(splitOffNumber())
+                    }
+                    'h' -> {
+                        SVGRelativeHorizontalLine(splitOffNumber())
+                    }
+                    'V' -> {
+                        SVGVerticalLine(splitOffNumber())
+                    }
+                    'v' -> {
+                        SVGRelativeVerticalLine(splitOffNumber())
+                    }
+                    's' -> {
+                        SVGRelativeSmoothCubicBezierOperation(readCooPair(), readCooPair())
+                    }
+                    'Z', 'z' -> {
+                        SVGClosePath()
+                    }
+                    else -> throw Exception()
+                }
+                ops.add(op)
             }
 
             return SVGPath(ops, styles)

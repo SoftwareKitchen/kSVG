@@ -7,6 +7,7 @@ import tech.softwarekitchen.ksvg.svg.draw.draw
 import tech.softwarekitchen.ksvg.svg.model.SVGCircle
 import tech.softwarekitchen.ksvg.svg.model.SVGGroup
 import tech.softwarekitchen.ksvg.svg.model.SVGPath
+import tech.softwarekitchen.ksvg.svg.model.SVGRect
 import tech.softwarekitchen.ksvg.svg.model.css.SVGStyle
 import tech.softwarekitchen.ksvg.svg.model.css.parseSVGStyles
 import java.awt.image.BufferedImage
@@ -27,8 +28,9 @@ fun Element.svgIterate(): List<SVGItem>{
                 "path" -> SVGPath.fromXMLNode(node)
                 "circle" -> SVGCircle(node)
                 "defs" -> SVGGroup(node)    //Fixme?
-                "rect" -> null              //TODO
+                "rect" -> SVGRect(node)              //TODO
                 "clipPath" -> null          //TODO
+                "metadata" -> null          //TODO
                 else -> throw Exception()
             })
         }
@@ -37,8 +39,8 @@ fun Element.svgIterate(): List<SVGItem>{
 }
 
 class SVGImage(file: File) {
-    val basePos: Pair<Int, Int>
-    val canvasSize: Pair<Int, Int>
+    val basePos: Pair<Double, Double>
+    val canvasSize: Pair<Double, Double>
     val data: List<SVGItem>
     val styles: List<SVGStyle>
 
@@ -53,15 +55,15 @@ class SVGImage(file: File) {
         if (viewBox != null) {
             val vb = viewBox.textContent
             val viewBase = vb.split(" ")
-            basePos = Pair(viewBase[0].toInt(), viewBase[1].toInt())
-            canvasSize = Pair(viewBase[2].toInt(), viewBase[3].toInt())
+            basePos = Pair(viewBase[0].toDouble(), viewBase[1].toDouble())
+            canvasSize = Pair(viewBase[2].toDouble(), viewBase[3].toDouble())
         } else {
             //Go via width & height
 
             val wid = (svgElem.attributes.getNamedItem("width").textContent).toInt()
             val hei = (svgElem.attributes.getNamedItem("height").textContent).toInt()
-            basePos = Pair(0, 0)
-            canvasSize = Pair(wid, hei)
+            basePos = Pair(0.0, 0.0)
+            canvasSize = Pair(wid.toDouble(), hei.toDouble())
         }
 
         data = svgElem.svgIterate()
@@ -82,4 +84,12 @@ class SVGImage(file: File) {
         val facY = size.y.toDouble() / canvasSize.second
         return Pair({it * facX}, {it * facY})
     }
+}
+
+fun main(){
+    val snake = File("magiaaron-Cartoon-Flower.svg")
+    val svg = SVGImage(snake)
+    val img = BufferedImage(600,800,BufferedImage.TYPE_INT_ARGB)
+    svg.draw(img)
+    ImageIO.write(img, "png", File("foo.png"))
 }

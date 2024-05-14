@@ -1,7 +1,20 @@
 package tech.softwarekitchen.ksvg.svg.model
 
 enum class SVGOperationType{
-    Move, RelativeMove, CubicBezier, RelativeCubicBezier, RelativeSmoothCubicBezier, Line, RelativeLine, Arc, RelativeArc, HorizontalLine, RelativeHorizontalLine, VerticalLine, RelativeVerticalLine, ClosePath
+    Move,
+    RelativeMove,
+    CubicBezier,
+    RelativeCubicBezier,
+    RelativeSmoothCubicBezier,
+    Line,
+    RelativeLine,
+    Arc,
+    RelativeArc,
+    HorizontalLine,
+    RelativeHorizontalLine,
+    VerticalLine,
+    RelativeVerticalLine,
+    ClosePath
 }
 
 interface SVGOperation{

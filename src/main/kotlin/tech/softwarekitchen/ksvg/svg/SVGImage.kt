@@ -31,7 +31,13 @@ fun Element.svgIterate(): List<SVGItem>{
                 "rect" -> SVGRect(node)              //TODO
                 "clipPath" -> null          //TODO
                 "metadata" -> null          //TODO
-                else -> throw Exception()
+                "filter" -> null            //TODO
+                "pattern" -> null           //TODO
+                "radialGradient" -> null    //TODO
+                else -> {
+                    println("Warn: Ignoring node of type ${node.tagName}")
+                    null
+                }
             })
         }
     }

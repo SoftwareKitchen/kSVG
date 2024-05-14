@@ -13,6 +13,9 @@ import tech.softwarekitchen.ksvg.svg.model.css.parseFillColor
 import java.awt.BasicStroke
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
+import java.awt.image.BufferedImage.TYPE_INT_ARGB
+import java.io.File
+import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
 typealias CoordinateMapper = (Double, Double) -> Pair<Double, Double>
@@ -61,9 +64,10 @@ fun SVGRect.draw(g: Graphics2D, scaler: Scaler2D, coordinateMapper: CoordinateMa
 fun SVGCircle.draw(g: Graphics2D, scaler: Scaler2D, coordinateMapper: CoordinateMapper, parentStyles: List<SVGStyle>){
     val base = coordinateMapper(center.first, center.second)
     val scaledRadius = scaler.first(radius)
+    val effectiveStyles = mergeStyles(parentStyles, styles)
 
     g.drawWithSVGStyle(
-        parentStyles,
+        effectiveStyles,
         {
             it.fillOval(
                 (base.first - scaledRadius).roundToInt(),

@@ -38,7 +38,7 @@
         <dependency>
             <groupId>tech.software-kitchen.common</groupId>
             <artifactId>Common-Vector</artifactId>
-            <version>1.2</version>
+            <version>1.4</version>
         </dependency>
     </dependencies>
 
